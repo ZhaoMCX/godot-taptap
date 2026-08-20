@@ -1,0 +1,195 @@
+[gd_scene format=3 uid="uid://c0ruhtw8kdqqp"]
+
+[ext_resource type="Script" uid="uid://c824tukqe5jgl" path="res://addons/godot_taptap/features/cloud_save/scenes/taptap_cloud_save_panel.gd" id="1_panel"]
+
+[node name="TapTapCloudSavePanel" type="Control" unique_id=1121827915]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_panel")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1594325193]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.035, 0.047, 0.067, 1)
+
+[node name="PageMargin" type="MarginContainer" parent="." unique_id=1901805475]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 28
+
+[node name="Columns" type="HBoxContainer" parent="PageMargin" unique_id=811500975]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Sidebar" type="PanelContainer" parent="PageMargin/Columns" unique_id=487249465]
+custom_minimum_size = Vector2(330, 0)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="PageMargin/Columns/Sidebar" unique_id=1084494034]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 18
+
+[node name="Content" type="VBoxContainer" parent="PageMargin/Columns/Sidebar/Margin" unique_id=417722897]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Header" type="HBoxContainer" parent="PageMargin/Columns/Sidebar/Margin/Content" unique_id=71023517]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="PageMargin/Columns/Sidebar/Margin/Content/Header" unique_id=1560534763]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "云存档"
+
+[node name="RefreshButton" type="Button" parent="PageMargin/Columns/Sidebar/Margin/Content/Header" unique_id=856412174]
+unique_name_in_owner = true
+layout_mode = 2
+text = "刷新"
+
+[node name="LogoutButton" type="Button" parent="PageMargin/Columns/Sidebar/Margin/Content/Header" unique_id=842638652]
+unique_name_in_owner = true
+layout_mode = 2
+text = "切换账号"
+
+[node name="Hint" type="Label" parent="PageMargin/Columns/Sidebar/Margin/Content" unique_id=483684838]
+modulate = Color(0.7, 0.74, 0.82, 1)
+layout_mode = 2
+text = "选择一个游戏存档槽位"
+
+[node name="SlotScroll" type="ScrollContainer" parent="PageMargin/Columns/Sidebar/Margin/Content" unique_id=1545396924]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SlotList" type="VBoxContainer" parent="PageMargin/Columns/Sidebar/Margin/Content/SlotScroll" unique_id=1673387019]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Details" type="PanelContainer" parent="PageMargin/Columns" unique_id=314862421]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Margin" type="MarginContainer" parent="PageMargin/Columns/Details" unique_id=587968818]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 24
+
+[node name="Content" type="VBoxContainer" parent="PageMargin/Columns/Details/Margin" unique_id=1564476436]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="TitleRow" type="HBoxContainer" parent="PageMargin/Columns/Details/Margin/Content" unique_id=934806616]
+layout_mode = 2
+
+[node name="SlotTitleLabel" type="Label" parent="PageMargin/Columns/Details/Margin/Content/TitleRow" unique_id=1758507397]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 28
+text = "存档详情"
+
+[node name="StatusBadge" type="Label" parent="PageMargin/Columns/Details/Margin/Content/TitleRow" unique_id=1120642226]
+unique_name_in_owner = true
+layout_mode = 2
+text = "等待刷新"
+
+[node name="Cover" type="TextureRect" parent="PageMargin/Columns/Details/Margin/Content" unique_id=502966302]
+unique_name_in_owner = true
+texture_filter = 1
+custom_minimum_size = Vector2(0, 220)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="SummaryLabel" type="Label" parent="PageMargin/Columns/Details/Margin/Content" unique_id=1583865769]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "存档摘要"
+autowrap_mode = 2
+
+[node name="Separator" type="HSeparator" parent="PageMargin/Columns/Details/Margin/Content" unique_id=1850165148]
+layout_mode = 2
+
+[node name="LocalLabel" type="Label" parent="PageMargin/Columns/Details/Margin/Content" unique_id=1585627753]
+unique_name_in_owner = true
+layout_mode = 2
+text = "本机：无存档"
+autowrap_mode = 2
+
+[node name="CloudLabel" type="Label" parent="PageMargin/Columns/Details/Margin/Content" unique_id=2072138669]
+unique_name_in_owner = true
+layout_mode = 2
+text = "云端：未确认"
+autowrap_mode = 2
+
+[node name="Spacer" type="Control" parent="PageMargin/Columns/Details/Margin/Content" unique_id=1805740988]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MessageLabel" type="Label" parent="PageMargin/Columns/Details/Margin/Content" unique_id=1343430938]
+unique_name_in_owner = true
+layout_mode = 2
+text = "等待登录"
+autowrap_mode = 2
+
+[node name="ConflictActions" type="HBoxContainer" parent="PageMargin/Columns/Details/Margin/Content" unique_id=1623576326]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="UseCloudButton" type="Button" parent="PageMargin/Columns/Details/Margin/Content/ConflictActions" unique_id=58151744]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "使用云端"
+
+[node name="KeepLocalButton" type="Button" parent="PageMargin/Columns/Details/Margin/Content/ConflictActions" unique_id=194262389]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "保留本机并上传"
+
+[node name="Actions" type="HBoxContainer" parent="PageMargin/Columns/Details/Margin/Content" unique_id=21698610]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PrimaryButton" type="Button" parent="PageMargin/Columns/Details/Margin/Content/Actions" unique_id=142382041]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "载入存档"
+
+[node name="DeleteButton" type="Button" parent="PageMargin/Columns/Details/Margin/Content/Actions" unique_id=717105826]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 48)
+layout_mode = 2
+text = "删除云备份"
+
+[node name="ConfirmationDialog" type="ConfirmationDialog" parent="." unique_id=1690274453]
+unique_name_in_owner = true
+title = "确认云存档操作"
+ok_button_text = "确认"
+cancel_button_text = "取消"

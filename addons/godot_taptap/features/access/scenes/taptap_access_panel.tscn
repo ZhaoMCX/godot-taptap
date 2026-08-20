@@ -1,0 +1,98 @@
+[gd_scene format=3 uid="uid://15aqsdeqmym4"]
+
+[ext_resource type="Script" uid="uid://chaq8rsctriu4" path="res://addons/godot_taptap/features/access/scenes/taptap_access_panel.gd" id="1_ianvu"]
+
+[node name="TapTapAccessPanel" type="CenterContainer" unique_id=1304490539]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_ianvu")
+
+[node name="Card" type="PanelContainer" parent="." unique_id=481182978]
+custom_minimum_size = Vector2(640, 0)
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Card" unique_id=1061621858]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="Content" type="VBoxContainer" parent="Card/Margin" unique_id=1052205172]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Card/Margin/Content" unique_id=1408398010]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "TapSDK 登录与防沉迷测试"
+
+[node name="EnvironmentLabel" type="Label" parent="Card/Margin/Content" unique_id=471778910]
+unique_name_in_owner = true
+layout_mode = 2
+text = "运行环境"
+
+[node name="Separator" type="HSeparator" parent="Card/Margin/Content" unique_id=720147413]
+layout_mode = 2
+
+[node name="ConsentCheck" type="CheckButton" parent="Card/Margin/Content" unique_id=977928103]
+unique_name_in_owner = true
+layout_mode = 2
+text = "我已阅读并同意隐私政策"
+
+[node name="ActionRow" type="HBoxContainer" parent="Card/Margin/Content" unique_id=2055922927]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="InitializeButton" type="Button" parent="Card/Margin/Content/ActionRow" unique_id=1480397949]
+unique_name_in_owner = true
+layout_mode = 2
+text = "初始化 TapSDK"
+
+[node name="LoginButton" type="Button" parent="Card/Margin/Content/ActionRow" unique_id=895897107]
+unique_name_in_owner = true
+layout_mode = 2
+text = "TapTap 登录"
+
+[node name="LogoutButton" type="Button" parent="Card/Margin/Content/ActionRow" unique_id=1931178953]
+unique_name_in_owner = true
+layout_mode = 2
+text = "登出"
+
+[node name="RetryButton" type="Button" parent="Card/Margin/Content/ActionRow" unique_id=2140360269]
+unique_name_in_owner = true
+layout_mode = 2
+text = "重试"
+
+[node name="AccountLabel" type="Label" parent="Card/Margin/Content" unique_id=1228334738]
+unique_name_in_owner = true
+layout_mode = 2
+text = "账号：未登录"
+
+[node name="StatusLabel" type="Label" parent="Card/Margin/Content" unique_id=651952149]
+unique_name_in_owner = true
+layout_mode = 2
+text = "状态：WAITING_CONSENT"
+autowrap_mode = 2
+
+[node name="DemoSeparator" type="HSeparator" parent="Card/Margin/Content" unique_id=584893474]
+layout_mode = 2
+
+[node name="SimulationRow" type="HBoxContainer" parent="Card/Margin/Content" unique_id=1533305223]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="CodeLabel" type="Label" parent="Card/Margin/Content/SimulationRow" unique_id=2115987529]
+layout_mode = 2
+text = "模拟防沉迷 code："
+
+[node name="CodeOption" type="OptionButton" parent="Card/Margin/Content/SimulationRow" unique_id=898276045]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SimulateButton" type="Button" parent="Card/Margin/Content/SimulationRow" unique_id=2144691232]
+unique_name_in_owner = true
+layout_mode = 2
+text = "触发结果"

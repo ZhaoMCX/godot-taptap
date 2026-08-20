@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://d3taptapapp02"]
+
+[ext_resource type="Script" uid="uid://d3taptapapp01" path="res://addons/godot_taptap/applications/tap_tap_application.gd" id="1_application"]
+[ext_resource type="Script" uid="uid://b08px0ks8g6at" path="res://addons/godot_taptap/modules/core/tap_sdk_core_module.gd" id="2_core"]
+[ext_resource type="Script" uid="uid://tfcpo0c5uy2o" path="res://addons/godot_taptap/modules/login/tap_tap_login_module.gd" id="3_login"]
+[ext_resource type="Script" uid="uid://dqhmdgbkj5fj6" path="res://addons/godot_taptap/modules/compliance/tap_tap_compliance_module.gd" id="4_compliance"]
+[ext_resource type="Script" uid="uid://cwcwgjqo4kt2j" path="res://addons/godot_taptap/features/access/tap_tap_access_feature.gd" id="5_access"]
+[ext_resource type="PackedScene" uid="uid://15aqsdeqmym4" path="res://addons/godot_taptap/features/access/scenes/taptap_access_panel.tscn" id="6_panel"]
+[ext_resource type="Script" uid="uid://dita3x8boqri5" path="res://addons/godot_taptap/modules/cloud_save/tap_tap_cloud_save_module.gd" id="7_cloud_save"]
+[ext_resource type="Script" uid="uid://d2b0468k7sewq" path="res://addons/godot_taptap/features/cloud_save/tap_tap_cloud_save_feature.gd" id="8_cloud_feature"]
+[ext_resource type="PackedScene" path="res://addons/godot_taptap/features/cloud_save/scenes/taptap_cloud_save_panel.tscn" id="9_cloud_panel"]
+[ext_resource type="Script" uid="uid://df6lnsl15x8xm" path="res://addons/godot_taptap/tools/taptap/cloud_save/tap_cloud_save_local_store.gd" id="10_local_store"]
+
+[node name="TapTapApplication" type="Node" unique_id=1516123853 node_paths=PackedStringArray("tap_sdk_core_module", "tap_tap_login_module", "tap_tap_compliance_module", "tap_tap_cloud_save_module", "taptap_access_feature", "taptap_access_panel", "taptap_cloud_save_feature", "taptap_cloud_save_panel", "cloud_save_local_store")]
+script = ExtResource("1_application")
+tap_sdk_core_module = NodePath("TapSdkCoreModule")
+tap_tap_login_module = NodePath("TapTapLoginModule")
+tap_tap_compliance_module = NodePath("TapTapComplianceModule")
+tap_tap_cloud_save_module = NodePath("TapTapCloudSaveModule")
+taptap_access_feature = NodePath("TapTapAccessFeature")
+taptap_access_panel = NodePath("TapTapAccessPanel")
+taptap_cloud_save_feature = NodePath("TapTapCloudSaveFeature")
+taptap_cloud_save_panel = NodePath("TapTapCloudSavePanel")
+cloud_save_local_store = NodePath("TapCloudSaveLocalStore")
+
+[node name="TapSdkCoreModule" type="Node" parent="." unique_id=1953626754]
+script = ExtResource("2_core")
+
+[node name="TapTapLoginModule" type="Node" parent="." unique_id=2146865163]
+script = ExtResource("3_login")
+
+[node name="TapTapComplianceModule" type="Node" parent="." unique_id=329640956]
+script = ExtResource("4_compliance")
+
+[node name="TapTapCloudSaveModule" type="Node" parent="." unique_id=1691009810]
+script = ExtResource("7_cloud_save")
+
+[node name="TapTapAccessFeature" type="Node" parent="." unique_id=1162943769]
+script = ExtResource("5_access")
+
+[node name="TapTapCloudSaveFeature" type="Node" parent="." unique_id=876699439]
+script = ExtResource("8_cloud_feature")
+
+[node name="TapCloudSaveLocalStore" type="Node" parent="." unique_id=2127631887]
+script = ExtResource("10_local_store")
+
+[node name="TapTapAccessPanel" parent="." unique_id=1418238279 instance=ExtResource("6_panel")]
+
+[node name="TapTapCloudSavePanel" parent="." unique_id=1436561208 instance=ExtResource("9_cloud_panel")]
+layout_mode = 3

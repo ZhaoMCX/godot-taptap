@@ -1,0 +1,5 @@
+.gitattributes export-ignore
+base/tests export-ignore
+base/tests/** export-ignore
+rules/**/tests export-ignore
+rules/**/tests/** export-ignore

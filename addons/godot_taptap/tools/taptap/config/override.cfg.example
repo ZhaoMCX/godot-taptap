@@ -1,0 +1,5 @@
+[tap_sdk]
+
+client_id="请填写 TapTap 开发者中心的 Client ID"
+client_token="请填写 TapTap 开发者中心的 Client Token"
+enable_debug_log=false

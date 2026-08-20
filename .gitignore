@@ -1,0 +1,30 @@
+# Godot-generated editor and import cache.
+/.godot/
+
+# Local TapTap developer credentials.
+/override.cfg
+
+# Generated Android export workspace.
+/android/
+
+# Local build artifacts; keep only the marker that hides them from Godot's
+# resource scanner.
+/builds/*
+!/builds/.gdignore
+
+# GDUnit4 output is generated, but keep the marker that hides it from Godot's
+# resource scanner.
+/reports/*
+!/reports/.gdignore
+
+# Local third-party source packages and vendor-native Godot packages. Godot
+# scans these resources for conversion, but Git never publishes them.
+/source_packages/
+/Assets/
+
+# Android Tool build caches; distributable AAR files under tools/taptap/bin are tracked.
+/addons/godot_taptap/tools/taptap/android_plugin/.gradle/
+/addons/godot_taptap/tools/taptap/android_plugin/.kotlin/
+/addons/godot_taptap/tools/taptap/android_plugin/**/build/
+
+# Keep Godot .uid files and source-side .import metadata in version control.

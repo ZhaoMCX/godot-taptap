@@ -1,0 +1,60 @@
+plugins {
+    id "com.android.library"
+    id "org.jetbrains.kotlin.android"
+}
+
+android {
+    namespace "com.godotframework.taptap"
+    compileSdk 36
+    buildToolsVersion "36.0.0"
+
+    defaultConfig {
+        minSdk 24
+        targetSdk 36
+        versionCode 1
+        versionName "0.2.0"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
+    libraryVariants.configureEach { variant ->
+        variant.outputs.configureEach { output ->
+            output.outputFileName = "GodotTapTap.${variant.name}.aar"
+        }
+    }
+}
+
+dependencies {
+    compileOnly "org.godotengine:godot:4.7.1.stable"
+    implementation "com.taptap.sdk:tap-core:4.10.8"
+    implementation "com.taptap.sdk:tap-login:4.10.8"
+    implementation "com.taptap.sdk:tap-compliance:4.10.8"
+    implementation "com.taptap.sdk:tap-cloudsave:4.10.8"
+    testImplementation "junit:junit:4.13.2"
+    testImplementation "org.json:json:20240303"
+}
+
+tasks.register("copyDebugAar", Copy) {
+    dependsOn "assembleDebug"
+    from "build/outputs/aar"
+    include "GodotTapTap.debug.aar"
+    into "../../bin/debug"
+}
+
+tasks.register("copyReleaseAar", Copy) {
+    dependsOn "assembleRelease"
+    from "build/outputs/aar"
+    include "GodotTapTap.release.aar"
+    into "../../bin/release"
+}
+
+tasks.named("assemble").configure {
+    finalizedBy "copyDebugAar", "copyReleaseAar"
+}

@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://dfajit6sbm5er"]
+
+[ext_resource type="PackedScene" uid="uid://cqjk2oq5pmknu" path="res://game/applications/godot_taptap_test_application.tscn" id="1_application"]
+[ext_resource type="Script" uid="uid://dmsrkle3cmuv3" path="res://game/applications/tests/device/tap_cloud_save_device_test_application.gd" id="2_script"]
+
+[node name="TapCloudSaveDeviceTestApplication" unique_id=281700951 instance=ExtResource("1_application")]
+script = ExtResource("2_script")
