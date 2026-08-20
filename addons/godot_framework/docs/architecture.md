@@ -20,16 +20,23 @@
 - 文档说明设计意图，测试说明可观察行为，两者与代码共同构成框架能力。
 - 低魔法优先于少写几行代码，可验证性优先于调用便利性。
 
-### 四层架构：职责不可互换
+### 四种职责：边界不可互换
 
-Application 是组合根，Feature 管理跨模块用例，Module 拥有内聚领域能力，Tool 提供无领域状态
-的基础能力。四层是具体游戏代码的职责模型，不是核心插件内部必须建立的四个目录。
+Application 是一次运行唯一的组合根，Feature 是完整、用户可感知的功能切片，Module 拥有内聚领域
+能力和权威状态，Tool 提供无领域状态的基础能力。Feature 可以协调零个或多个 Module；例如玩家输入、
+移动意图与相机协作组成的 `PlayerController` 属于 Feature。四种职责是具体游戏代码的职责模型，
+不是核心插件内部必须建立的四个目录。
 
 基于 GF 的可复用功能插件可以提供自己的四层运行时代码。项目和插件中的职责目录统一命名为
-`applications`、`features`、`modules`、`tools`；类型与架构术语保持单数。项目纯美术资源统一放在
-`game/arts`，它不构成第五层且不得反向依赖运行时职责。项目目录和插件目录只是物理分布，插件
+`applications`、`features`、`modules`、`tools`；类型与架构术语保持单数。`applications` 只保存
+入口脚本、入口场景、测试和规则文件，不建立业务 `scenes` 或资源目录。项目纯美术资源统一放在
+`game/arts`，它不构成第五层且不得反向依赖运行时职责；其中不得包含业务脚本、碰撞体、物理体或
+玩法状态。Feature 或 Module 引用纯美术并加入玩法节点后形成的游戏场景归所属职责。项目目录和插件目录只是物理分布，插件
 目录不构成第五层；平台适配、原生 SDK、模拟器和导出实现应按职责归入 Tool 或对应 Module，而不
 建立顶层 `runtime`、`adapter` 或 `android_plugin`。
+
+`game/tools` 只表示 GF Tool 职责，不能因为内容仅用于开发期就放入该目录。仓库级生成、验证和构建
+脚本放在仓库根 `tools`。
 
 Feature 和 Module 都不得相互依赖同层职责单元。跨 Module 行为只能由 Feature 通过公开 API
 协调；模块通信只能使用明确的 Command、Query 和 Event 契约。不得通过跨层访问、共享可变状态
@@ -87,8 +94,8 @@ Module  -> Tool
 Tool    -> 不依赖更高层
 ```
 
-Application 选择本地或远程 API 的具体实现并显式注入。Feature 负责跨 Module 行为和信号订阅。
-Module 拥有内聚能力及其权威状态。Tool 是无领域状态的基础辅助代码。
+Application 选择本地或远程 API 的具体实现并显式注入。Feature 拥有完整功能行为、流程状态和信号
+订阅，并可协调零个或多个 Module。Module 拥有内聚能力及其权威状态。Tool 是无领域状态的基础辅助代码。
 
 独立 Module 之间的联动必须由游戏 Application 中的 Feature 负责。
 
@@ -102,19 +109,30 @@ Command、Query、Event 与生命周期。职责外部只能引用 `public`。
 
 ## 生命周期与场景组合
 
-- Application 级管理器、Module、Feature 和 Feature UI 是 Application 场景拥有的 Node。
+- 每次 SceneTree 运行只能存在一个活动的 Application。测试或独立样例可以拥有各自入口，但不能在
+  同一次运行中组合多个 Application。
+- Application 级管理器、Module、Feature 和 Feature UI 是 Application 场景声明并持有的 Node。
 - Application 场景通过子节点或 PackedScene 实例声明这些依赖，具体 Application 使用类型化导出变量
-  接收引用；不得用 `get_node`、`get_node_or_null`、`add_child` 或运行时实例化替代场景声明。
+  接收引用；不得用 `add_child` 或运行时实例化替代场景声明。
+- 不仅 Application，任何脚本引用场景编辑期已知的固定 Node 时，都必须使用带具体类型的 `@export var`，
+  并在 `.tscn` 中通过 `node_paths` 和 NodePath 属性显式绑定。`get_node`、`get_node_or_null`、`$Node`、
+  `%UniqueNode` 以及基于这些路径的 `@onready` 都属于隐式查找，不得用于固定节点。
+- 运行时创建、数量不定、来自外部数据或路径在设计期不可知的 Node 可以动态解析。动态解析应局限在
+  所属职责内部，并验证类型、处理缺失节点；固定场景结构和可声明依赖不属于动态例外。测试访问固定
+  场景节点时同样通过场景公开的绑定引用。
 - 运行时实体是由所属场景实例化和管理的 PackedScene。
 - Command、Event、Result 和 Snapshot 是轻量值对象。
 - 可编辑的静态配置使用 Resource；无场景所有权的 Tool 和值对象可以由代码创建。
 
-`GFApplication` 默认在 `_enter_tree()` 中执行 `compose()`，早于子节点 `_ready()`。如果导出 Node
-引用必须等场景进入树后才能解析，具体 Application 可以显式延迟到 `_ready()`，但必须先验证所有
-场景依赖并保持显式注入。Feature 在依赖注入后连接信号，并在离开场景树时断开自己拥有的连接。
+`GFApplication` 默认在 `_ready()` 中执行 `compose()`，此时场景声明的类型化子节点引用已经解析。
+子节点的 `_ready()` 早于 Application 组合，因此 Feature 和 Module 不得在那里使用尚未注入的依赖；
+依赖初始化由 Application 调用显式 `configure` 完成。Feature 在依赖注入后连接信号，并在离开场景树时
+断开自己拥有的连接。
 
-Feature 的场景和资源归属该 Feature 的 `scenes/`、`assets/` 等目录，由 Application 场景挂载；UI
-只能调用 Feature 公开 API，不得直接访问 Module 内部状态或平台桥接。
+Application 目录不拥有额外场景或资源；入口场景只负责挂载职责节点和绑定依赖。Feature 的场景、UI
+和功能专用配置归属该 Feature，Module 的游戏实体场景和领域配置归属该 Module。它们可以引用
+`game/arts` 的纯美术；加入脚本、碰撞、物理或玩法状态后的场景不再是纯美术。Feature UI 只能调用
+Feature 公开 API，不得直接访问 Module 内部状态或平台桥接。
 
 ## Command 生命周期
 

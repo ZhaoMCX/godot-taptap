@@ -20,8 +20,10 @@
 Application -> Feature -> Module -> Tool
 ```
 
-- **Application** 是组合根。它决定具体实现、拥有场景中的 Node、注入公开依赖并协调生命周期。
-- **Feature** 编排两个或更多 Module 的用例，管理跨 Module 的信号和状态转换，不依赖其他 Feature。
+- **Application** 是一次运行唯一的组合根。它决定具体实现、声明场景中的 Node、注入公开依赖并协调
+  生命周期，不拥有业务场景或资源。
+- **Feature** 是完整、用户可感知的功能切片，可以协调零个或多个 Module，拥有自己的功能流程、
+  呈现场景和信号连接，不依赖其他 Feature。`PlayerController` 属于 Feature。
 - **Module** 拥有单一内聚能力和权威状态，只依赖 Tool 与框架规则，不依赖其他 Module 或 Feature。
 - **Tool** 提供无领域状态的适配、平台实现、序列化、配置辅助或测试替身，不依赖更高层。
 
@@ -38,10 +40,14 @@ rules/      所有层共享的契约，目前包含 rules/cqrs
 
 ## Application 组合与场景所有权
 
-### Node 依赖由场景声明
+### 固定 Node 引用由场景声明
 
-Application 场景是 Application 所有 Node 的组合根。Module、Feature 和 Feature UI 等需要长期存在的
-Node 应作为场景子节点或 PackedScene 实例声明，并通过类型化导出变量表达依赖：
+每次 SceneTree 运行只能存在一个活动的 Application。测试和独立样例可以拥有各自入口，但不能在同一
+次运行中组合多个 Application。Application 目录只保存入口脚本、入口场景、测试和规则文件；不建立
+业务 `scenes`、`arts` 或 `assets` 目录。
+
+Application 场景是长期职责 Node 的组合根。Module、Feature 和 Feature UI 等需要长期存在的 Node
+应作为场景子节点或 PackedScene 实例声明，并通过类型化导出变量表达依赖：
 
 ```gdscript
 @export var account_module: AccountModule
@@ -49,18 +55,24 @@ Node 应作为场景子节点或 PackedScene 实例声明，并通过类型化�
 @export var account_panel: AccountPanel
 ```
 
-场景中的 `node_paths` 和 NodePath 只负责 Godot 的资源序列化，Application 代码通过已经解析的类型化
-引用进行组合。对于这些已声明依赖，Application 不应在运行时使用 `get_node`、`get_node_or_null`、
-`add_child` 或 `PackedScene.instantiate()` 重新查找或创建节点；缺少依赖时应明确报错并停止组合。
+这不是 Application 专用写法。任何脚本引用场景编辑期已知的固定 Node 时，都必须使用带具体类型的
+`@export var`，由 `.tscn` 的 `node_paths` 和 NodePath 属性显式绑定。`get_node`、
+`get_node_or_null`、`$Node`、`%UniqueNode` 以及基于这些路径的 `@onready` 都属于隐式查找，不得用于
+固定节点；测试访问固定场景节点时也通过场景公开的绑定引用。
+
+只有运行时创建、数量不定、来自外部数据或路径在设计期不可知的 Node 才允许动态解析。动态解析必须
+局限在所属职责内部、验证结果类型并处理节点不存在的情况，不能把固定场景结构标记为动态来绕过显式
+绑定。Application 也不得使用 `add_child` 或 `PackedScene.instantiate()` 重新创建已经由场景声明的
+长期依赖；缺少依赖时应明确报错并停止组合。
 
 Tool 对象、值对象和无场景所有权的配置辅助对象可以由代码创建，例如 `RefCounted`、`Resource` 或
 无领域状态的适配器。代码创建这些对象不改变 Node 的场景所有权规则。
 
 ### 组合时机与验证
 
-`GFApplication` 默认在 `_enter_tree()` 调用 `compose()`，以便早于子节点的 `_ready()` 完成注入。
-如果具体 Application 依赖的导出 Node 引用只有在进入场景树后才可用，可以显式覆盖生命周期，在
-`_ready()` 调用 `compose()`；此时必须保持同样的显式依赖和完整性验证，不能用隐式查找替代。
+`GFApplication` 默认在 `_ready()` 调用 `compose()`，这是场景声明的类型化子节点引用可靠解析后的
+最早通用时机。子节点的 `_ready()` 会先执行，因此 Feature 和 Module 不得在自己的 `_ready()` 中使用
+尚未由 Application 注入的依赖；需要依赖的初始化放在显式 `configure` 中，不能用隐式查找替代。
 
 组合过程应当：
 
@@ -71,11 +83,12 @@ Tool 对象、值对象和无场景所有权的配置辅助对象可以由代码
 
 不得使用业务 Autoload、服务定位器、全局消息总线、反射扫描或共享可变单例来绕过组合根。
 
-### Feature UI
+### Feature 场景与 UI
 
-Feature 的场景和资源放在该 Feature 的 `scenes/`、`assets/` 等目录中。UI 归属 Feature 的职责，
-但由 Application 场景声明、挂载和注入；UI 只调用 Feature 的公开 API，不直接访问 Module 内部状态、
-平台桥接或第三方 SDK。
+Feature 的场景、UI 和功能专用配置放在该 Feature 的 `scenes/`、`resources/` 等目录中。Feature 可以
+没有 Module，例如只承担独立预览或单一界面流程；存在领域能力和权威状态时再依赖 Module，不虚构空
+Module。UI 归属 Feature 的职责，但由 Application 场景声明、挂载和注入；UI 只调用 Feature 的公开
+API，不直接访问 Module 内部状态、平台桥接或第三方 SDK。
 
 ## Module、Feature 与 Tool 边界
 
@@ -85,6 +98,16 @@ Feature 的场景和资源放在该 Feature 的 `scenes/`、`assets/` 等目录�
 - 平台原生代码、AAR/SDK 二进制、EditorExportPlugin、回调适配器、序列化和桌面模拟桥接都属于
   Tool 实现细节，除非它们拥有明确的领域权威状态。
 - 模拟器只模拟平台边界，不承担业务状态；业务分支仍由 Module 或 Feature 负责。
+
+### 纯美术与游戏场景
+
+- `game/arts` 只保存模型、材质、纹理、骨骼、动画、纯视觉特效和不带玩法语义的视觉场景。
+- 纯美术不得包含业务脚本、碰撞体、物理体、玩法状态，也不得依赖 Application、Feature、Module 或
+  Tool。
+- Module 引用纯美术后加入碰撞、物理、脚本或领域状态形成的游戏实体场景，放在该 Module 的
+  `scenes`。
+- Feature 引用纯美术后形成的 UI、流程或功能呈现场景，放在该 Feature 的 `scenes`。
+- 是否属于 `game/arts` 由内容是否保持纯视觉决定，与消费者数量无关。
 
 ## 契约与敏感数据
 
@@ -104,8 +127,8 @@ Feature 的场景和资源放在该 Feature 的 `scenes/`、`assets/` 等目录�
 - Command、Event、Snapshot、API、Adapter、Validator 和测试替身各自单文件存放，不创建
   `messages.gd`、`models.gd`、`utils.gd` 等聚合文件。
 - 资源目录和文件名使用小写 ASCII `snake_case`；场景节点名使用 `PascalCase`。
-- Feature 和 Module 的场景、预制体和资源放在所属职责目录；共享资源放在最近共同父目录的 `shared`，
-  且不得反向依赖具体实体。
+- Feature 和 Module 的游戏场景、预制体和功能配置放在所属职责目录；纯美术始终放在项目
+  `game/arts`。职责内部共享的非美术资源放在最近共同父目录的 `shared`，且不得反向依赖具体实体。
 - 测试放在所属职责的 `tests/` 子目录；Fixture 只服务本职责测试，不跨职责共享。
 - Android/平台回调顺序和序列化逻辑在对应平台测试中验证；真实第三方 SDK 行为通过 Debug 包和目标设备
   验证。

@@ -1,7 +1,8 @@
 class_name GFFeature
 extends Node
 
-## Marker base for behavior that coordinates two or more module public APIs.
+## Marker base for a cohesive, user-visible capability.
 ##
-## Features receive dependencies from the application, own their signal
+## A feature may coordinate zero or more module public APIs. Features receive
+## dependencies from the application, own their behavior, presentation, and signal
 ## connections, and never depend on another feature.

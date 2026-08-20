@@ -8,5 +8,3 @@
 
 目录采用 GF 复数标准：插件和游戏均使用 `applications`、`features`、`modules`、`tools`；
 游戏还可按需使用 `arts` 与 `docs`。
-
-本仓从旧整合仓 `godot-framework-legacy@4ca0314` 提取。

@@ -1,14 +1,15 @@
 class_name GFApplication
 extends Node
 
-## Composition root for a Godot Framework application.
+## The single active composition root for one Godot Framework game run.
 ##
-## Override [method compose] to resolve nodes and inject dependencies explicitly.
-## Composition runs during [method Node._enter_tree], before child [method Node._ready]
-## callbacks.
+## Override [method compose] to validate scene-declared nodes and inject dependencies
+## explicitly. Keep gameplay behavior and owned content in features or modules.
+## Composition runs during [method Node._ready], after scene-declared child references
+## have been resolved.
 
 
-func _enter_tree() -> void:
+func _ready() -> void:
 	compose()
 
 
